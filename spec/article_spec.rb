@@ -2,6 +2,10 @@ require './spec/spec_helper'
 
 describe Rollin::Article do
   subject (:article) { Rollin::Article.new('spec/fixtures/articles/2013_05_01_My_first_post.mk') }
+
+  it 'tells article title' do
+    article.title == 'My first post'
+  end
   
   it 'compiles article body to html' do
     article.body.should == "<h2>This is my first post</h2>\n\n<p>And here we go!</p>\n"
