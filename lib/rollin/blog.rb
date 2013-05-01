@@ -23,7 +23,7 @@ class Rollin::Blog
     articles.map { |article| [article.year, article.month] }.uniq.map do |year_and_month|
       year = year_and_month[0]
       month = year_and_month[1]
-      articles_for_month = articles.map { |anArticle| anArticle.year == year && anArticle.month }
+      articles_for_month = articles.select { |anArticle| anArticle.year == year && anArticle.month == month }
       Rollin::MonthArchive.new(year, month, articles_for_month)
     end
   end
