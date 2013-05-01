@@ -1,5 +1,3 @@
-require "version"
-
 module Rollin
-  VERSION = Version.current
+  VERSION = File.read('VERSION')
 end
