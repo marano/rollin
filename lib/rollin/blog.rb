@@ -20,26 +20,11 @@ class Rollin::Blog
   end
 
   def monthly_archive
-    years = {}
-    articles.each do |article|
-      if years.has_key?(article.year)
-        year = years[article.year]
-        if year.has_key?(article.month)
-          year[article.month] << article
-        else
-          year[article.month] = [ article ]
-        end
-      else
-        years[article.year] = { article.month => [ article ] }
-      end
+    articles.map { |article| [article.year, article.month] }.uniq.map do |year_and_month|
+      year = year_and_month[0]
+      month = year_and_month[1]
+      articles_for_month = articles.map { |anArticle| anArticle.year == year && anArticle.month }
+      Rollin::MonthArchive.new(year, month, articles_for_month)
     end
-    archives_list = []
-    years.each do |year, months|
-      months.each do |month|
-        month_articles = articles.map { |article| article.year == year && article.month == month }
-        archives_list << Rollin::MonthArchive.new(year, month, month_articles)
-      end
-    end
-    return archives_list
   end
 end
