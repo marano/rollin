@@ -1,3 +1,3 @@
 module Rollin
-  VERSION = File.read('VERSION')
+  VERSION = File.read(File.join(File.dirname(__FILE__), '..', '..', 'VERSION'))
 end
