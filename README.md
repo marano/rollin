@@ -21,7 +21,7 @@ First you will need to have the following structure in your filesystem.
     ├── my_posts
         └── 2013_05_01_My_first_post.mk
 
-### Getting the articles
+### Articles
 
 In your code.
     
@@ -38,13 +38,21 @@ In your code.
     anArticle.month  # => 05
     anArticle.day    # => 01
 
-### Getting the archive
+### Monthly archive
 
     a_monthly_archive = blog.monthly_archive.first
 
     a_monthly_archive.year      # => 2013
     a_monthly_archive.month     # => 5
     a_monthly_archive.articles  # => [ Rollin::Article(:title => "My first post" ...) ]
+
+### Annual archive
+
+    an_annual_archive = blog.annual_archive.first
+
+    an_annual_archive.year                 # => 2013
+    an_annual_archive.articles             # => [ Rollin::Article(:title => "My first post" ...) ]
+    an_annual_archive.monthly_archive      # => [ Rollin::MonthArchive(:year => 2013, :month => 5 ...) ]
 
 ### Finding an article
 
