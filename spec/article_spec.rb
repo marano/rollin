@@ -8,15 +8,15 @@ describe Rollin::Article do
   end
 
   it 'tells article year' do
-    article.year == 2013
+    article.year.should == 2013
   end
 
   it 'tells article month' do
-    article.month == 5
+    article.month.should == 5
   end
 
   it 'tells article day' do
-    article.day == 1
+    article.day.should == 1
   end
 
   it 'tells article date' do
