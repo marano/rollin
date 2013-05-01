@@ -11,5 +11,9 @@ describe Rollin::Blog do
     it 'has the right amount of monthly archives' do
       blog.monthly_archive.size.should == 2
     end
+
+    it 'finds article by its id' do
+      blog.find_article_by_id('2013_05_01_My_first_post').title.should == 'My first post'
+    end
   end
 end

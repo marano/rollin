@@ -3,6 +3,10 @@ class Rollin::Blog
     @articles_folder = options[:articles_folder] || 'articles'
   end
 
+  def find_article_by_id(article_id)
+    articles.find { |article| article.id == article_id }
+  end
+
   def articles
     Dir["#{@articles_folder}/**/*.mk"].sort.map do |article_source|
       Rollin::Article.new(article_source)

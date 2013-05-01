@@ -3,6 +3,10 @@ require './spec/spec_helper'
 describe Rollin::Article do
   subject (:article) { Rollin::Article.new('spec/fixtures/articles/2013_05_01_My_first_post.mk') }
 
+  it 'tells article id' do
+    article.id.should == '2013_05_01_My_first_post'
+  end
+
   it 'tells article title' do
     article.title.should == 'My first post'
   end
