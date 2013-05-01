@@ -1,10 +1,7 @@
 class Rollin::MonthArchive
-  attr_reader :year, :month
+  attr_reader :year, :month, :articles
 
-  def initialize(year, month)
-    @year, @month = year, month
-  end
-
-  def articles
+  def initialize(year, month, articles)
+    @year, @month, @articles = year, month, articles
   end
 end
