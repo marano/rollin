@@ -1,3 +1,5 @@
+require "version"
+
 module Rollin
-  VERSION = "0.0.4"
+  VERSION = Version.current
 end
