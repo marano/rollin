@@ -25,7 +25,10 @@ class Rollin::Blog
     end
     archives_list = []
     years.each do |year, months|
-      months.each { |month| archives_list << Rollin::MonthArchive.new(year, month) }
+      months.each do |month|
+        month_articles = articles.map { |article| article.year == year && article.month == month }
+        archives_list << Rollin::MonthArchive.new(year, month, month_articles)
+      end
     end
     return archives_list
   end
