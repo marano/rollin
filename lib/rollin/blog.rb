@@ -13,6 +13,12 @@ class Rollin::Blog
     end
   end
 
+  def annually_archive
+    monthly_archive.map { |month_archive| month_archive.year }.uniq.map do |year|
+      Rollin::YearArchive.new(year, monthly_archive.map { |aMonth| aMonth.year == year })
+    end
+  end
+
   def monthly_archive
     years = {}
     articles.each do |article|

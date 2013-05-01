@@ -5,11 +5,15 @@ describe Rollin::Blog do
     subject (:blog) { Rollin::Blog.new(articles_folder: 'spec/fixtures/articles') }
 
     it 'has the right amount of articles' do
-      blog.articles.size.should == 3
+      blog.articles.size.should == 4
     end
 
     it 'has the right amount of monthly archives' do
-      blog.monthly_archive.size.should == 2
+      blog.monthly_archive.size.should == 3
+    end
+
+    it 'has the right amount of yearly archives' do
+      blog.annually_archive.size.should == 2
     end
 
     it 'finds article by its id' do
