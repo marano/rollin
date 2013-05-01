@@ -4,7 +4,7 @@ class Rollin::Article
   def initialize(source_file)
     @source_file = source_file
     filename = File.basename(@source_file)
-    @title = filename[11, filename.length - 11].gsub('_', ' ')
+    @title = filename[11, filename.length - 11 - 3].gsub('_', ' ')
     @year = filename[0, 4].to_i
     @month = filename[5, 2].to_i
     @day = filename[8, 2].to_i

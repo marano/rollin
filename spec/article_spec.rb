@@ -4,7 +4,7 @@ describe Rollin::Article do
   subject (:article) { Rollin::Article.new('spec/fixtures/articles/2013_05_01_My_first_post.mk') }
 
   it 'tells article title' do
-    article.title == 'My first post'
+    article.title.should == 'My first post'
   end
   
   it 'compiles article body to html' do
