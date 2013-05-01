@@ -8,12 +8,16 @@ describe Rollin::Blog do
       blog.articles.size.should == 4
     end
 
-    it 'has the right amount of monthly archives' do
+    it 'has monthly archives' do
       blog.monthly_archive.size.should == 3
+      blog.monthly_archive.first.class.should == Rollin::MonthArchive
     end
 
-    it 'has the right amount of annual archives' do
+    it 'has annual archives' do
       blog.annual_archive.size.should == 2
+      blog.annual_archive.first.class.should == Rollin::YearArchive
+      blog.annual_archive.first.monthly_archive.size.should == 2
+      blog.annual_archive.first.monthly_archive.first.class.should == Rollin::MonthArchive
     end
 
     it 'finds article by its id' do

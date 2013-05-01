@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 describe Rollin::YearArchive do
   let (:article) { Rollin::Article.new('spec/fixtures/2013_05_01_My_first_post.mk') }
   subject (:month_archive) { Rollin::MonthArchive.new(2013, 05, [ article ]) }
@@ -9,6 +11,7 @@ describe Rollin::YearArchive do
 
   it 'has monthly archives' do
     year_archive.monthly_archive.size.should == 1
+    year_archive.monthly_archive.first.should == month_archive
   end
 
   it 'has a list of articles' do
