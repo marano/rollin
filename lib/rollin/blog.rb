@@ -1,21 +1,32 @@
 class Rollin::Blog
+  def initialize(options = {})
+    @articles_folder = options[:articles_folder] || 'articles'
+  end
+
   def articles
-    Dir['articles/**/*.mk'].map do |article_source|
-      Article.new(article_source)
+    Dir["#{@articles_folder}/**/*.mk"].sort.map do |article_source|
+      Rollin::Article.new(article_source)
     end
   end
-end
 
-class Article
-  def initialize(source_file)
-    @source_file = source_file
-  end
-
-  def body
-    redcarpet = Redcarpet::Markdown.new(Redcarpet::Render::HTML,
-                            autolink: true,
-                            space_after_headers: true,
-                            hard_wrap: true)
-    redcarpet.render(File.read(@source_file))
+  def monthly_archive
+    years = {}
+    articles.each do |article|
+      if years.has_key?(article.year)
+        year = years[article.year]
+        if year.has_key?(article.month)
+          year[article.month] << article
+        else
+          year[article.month] = [ article ]
+        end
+      else
+        years[article.year] = { article.month => [ article ] }
+      end
+    end
+    archives_list = []
+    years.each do |year, months|
+      months.each { |month| archives_list << Rollin::MonthArchive.new(year, month) }
+    end
+    return archives_list
   end
 end
