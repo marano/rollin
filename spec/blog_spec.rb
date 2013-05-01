@@ -12,8 +12,8 @@ describe Rollin::Blog do
       blog.monthly_archive.size.should == 3
     end
 
-    it 'has the right amount of yearly archives' do
-      blog.annually_archive.size.should == 2
+    it 'has the right amount of annual archives' do
+      blog.annual_archive.size.should == 2
     end
 
     it 'finds article by its id' do
