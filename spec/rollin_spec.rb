@@ -38,18 +38,26 @@ describe 'how rollin works' do
 
   context 'searching for articles' do
     let (:first_article) { blog.articles.first }
+    let (:second_article) { blog.articles[1] }
+    let (:third_article) { blog.articles[2] }
     let (:article_with_custom_metatags) { blog.articles[2] }
 
     it 'searches by article id' do
-      blog.find('2013_05_01_My_first_post').should == first_article
+      blog.article('2013_05_01_My_first_post').should == first_article
     end
 
     it 'searches by metatags' do
-      blog.find(:tags => 'manero').should == article_with_custom_metatags
-      blog.find_all(:tags => 'manero').should == [ article_with_custom_metatags ]
+      blog.article(:tags => 'manero').should == article_with_custom_metatags
+      blog.articles(:tags => 'manero').should == [ article_with_custom_metatags ]
 
-      blog.find(:published => false).should == article_with_custom_metatags
-      blog.find_all(:published => false).should == [ article_with_custom_metatags ]
+      blog.article(:published => false).should == article_with_custom_metatags
+      blog.articles(:published => false).should == [ article_with_custom_metatags ]
+    end
+
+    it 'searches by date' do
+      blog.articles_by_publication(2013).should include(first_article, second_article, third_article)
+      blog.articles_by_publication(2013, 5).should include(first_article, second_article)
+      blog.articles_by_publication(2013, 5, 1).should include(first_article)
     end
   end
 

@@ -3,17 +3,21 @@ class Rollin::Blog
     @articles_folder = options[:articles_folder] || 'articles'
   end
 
-  def find(search)
-    articles.find { |article| article.matches?(search) }
+  def article(search)
+    read_articles.find { |article| article.matches?(search) }
   end
 
-  def find_all(search)
-    articles.select { |article| article.matches?(search) }
+  def articles(search=nil)
+    if search.nil?
+      read_articles
+    else
+      read_articles.select { |article| article.matches?(search) }
+    end
   end
 
-  def articles
-    Dir["#{@articles_folder}/**/*.mk"].sort.map do |article_source|
-      Rollin::Article.new(article_source)
+  def articles_by_publication(year, month=nil, day=nil)
+    articles.select do |article|
+      article.year == year && (month.nil? || article.month == month) && (day.nil? || day == article.day)
     end
   end
 
@@ -29,6 +33,14 @@ class Rollin::Blog
       month = year_and_month[1]
       articles_for_month = articles.select { |anArticle| anArticle.year == year && anArticle.month == month }
       Rollin::MonthArchive.new(year, month, articles_for_month)
+    end
+  end
+
+  private
+
+  def read_articles
+    Dir["#{@articles_folder}/**/*.mk"].sort.map do |article_source|
+      Rollin::Article.new(article_source)
     end
   end
 end
