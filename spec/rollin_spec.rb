@@ -11,15 +11,27 @@ describe 'how rollin works' do
 
   subject (:blog) { Rollin::Blog.new(articles_folder: 'spec/fixtures') }
 
-  context 'retrieving posts' do
+  context 'article content' do
+    subject (:article) { blog.articles.first }
+
+    it 'exposes article information and content' do
+      article.id.should == '2013_05_01_My_first_post'
+      article.title.should == 'My first post'
+      article.year.should == 2013
+      article.month.should == 5
+      article.day.should == 1
+      article.date.should == Date.new(2013, 5, 1)
+      article.body.should == "<h2>This is my first post</h2>\n\n<p>And here we go!</p>\n"
+    end
+  end
+
+  context 'listing articles' do
     let (:first_article) { TestArticle.new(id: '2013_05_01_My_first_post', title: 'My first post', date: Date.new(2013, 5, 1)) }
     let (:second_article) { TestArticle.new(id: '2013_05_02_My_second_post', title: 'My second post', date: Date.new(2013, 5, 2)) }
     let (:third_article) { TestArticle.new(id: '2013_06_01_My_third_post', title: 'My third post', date: Date.new(2013, 6, 1)) }
     let (:fourth_article) { TestArticle.new(id: '2014_01_01_My_fourth_post', title: 'My fourth post', date: Date.new(2014, 1, 1)) }
 
-    it 'gets articles' do
-      # articles
-
+    it 'lists all articles' do
       blog.should have(4).articles
 
       blog.articles[0].should == first_article
