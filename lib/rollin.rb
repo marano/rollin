@@ -1,5 +1,6 @@
 require "redcarpet"
 require "date"
+require "safe_yaml"
 
 require "rollin/version"
 require "rollin/blog"

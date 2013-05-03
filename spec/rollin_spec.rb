@@ -12,7 +12,8 @@ describe 'how rollin works' do
   subject (:blog) { Rollin::Blog.new(articles_folder: 'spec/fixtures') }
 
   context 'article content' do
-    subject (:article) { blog.articles.first }
+    let (:article) { blog.articles.first }
+    let (:article_with_title_metatag) { blog.articles[1] }
 
     it 'exposes article information and content' do
       article.id.should == '2013_05_01_My_first_post'
@@ -23,11 +24,15 @@ describe 'how rollin works' do
       article.date.should == Date.new(2013, 5, 1)
       article.body.should == "<h2>This is my first post</h2>\n\n<p>And here we go!</p>\n"
     end
+
+    it 'allows article title definition with metatag' do
+      article_with_title_metatag.title.should == 'This is a super post!'
+    end
   end
 
   context 'listing articles' do
     let (:first_article) { TestArticle.new(id: '2013_05_01_My_first_post', title: 'My first post', date: Date.new(2013, 5, 1)) }
-    let (:second_article) { TestArticle.new(id: '2013_05_02_My_second_post', title: 'My second post', date: Date.new(2013, 5, 2)) }
+    let (:second_article) { TestArticle.new(id: '2013_05_02_My_second_post', title: 'This is a super post!', date: Date.new(2013, 5, 2)) }
     let (:third_article) { TestArticle.new(id: '2013_06_01_My_third_post', title: 'My third post', date: Date.new(2013, 6, 1)) }
     let (:fourth_article) { TestArticle.new(id: '2014_01_01_My_fourth_post', title: 'My fourth post', date: Date.new(2014, 1, 1)) }
 

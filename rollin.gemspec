@@ -25,4 +25,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "version"
 
   spec.add_dependency "redcarpet"
+  spec.add_dependency "safe_yaml"
 end
