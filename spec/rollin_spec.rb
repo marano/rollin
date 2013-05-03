@@ -45,8 +45,11 @@ describe 'how rollin works' do
     end
 
     it 'searches by metatags' do
-      blog.find(:tags => 'manero').should == [ article_with_custom_metatags ]
-      blog.find(:published => false).should == [ article_with_custom_metatags ]
+      blog.find(:tags => 'manero').should == article_with_custom_metatags
+      blog.find_all(:tags => 'manero').should == [ article_with_custom_metatags ]
+
+      blog.find(:published => false).should == article_with_custom_metatags
+      blog.find_all(:published => false).should == [ article_with_custom_metatags ]
     end
   end
 

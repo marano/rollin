@@ -4,11 +4,11 @@ class Rollin::Blog
   end
 
   def find(search)
-    if search.is_a? Hash
-      articles.select { |article| article.matches?(search) }
-    elsif search.is_a? String
-      articles.find { |article| article.id == search }
-    end
+    articles.find { |article| article.matches?(search) }
+  end
+
+  def find_all(search)
+    articles.select { |article| article.matches?(search) }
   end
 
   def articles
