@@ -32,7 +32,7 @@ describe 'how rollin works' do
     end
 
     it 'exposes the list of defined metatags' do
-      article_with_custom_metatags.metatags.should == { :tags => ['manero', 'massa', 'bacana'], :published => false }
+      article_with_custom_metatags.metatags.should == { tags: ['manero', 'massa', 'bacana'], published: false }
     end
   end
 
@@ -47,11 +47,11 @@ describe 'how rollin works' do
     end
 
     it 'searches by metatags' do
-      blog.article(:tags => 'manero').should == article_with_custom_metatags
-      blog.articles(:tags => 'manero').should == [ article_with_custom_metatags ]
+      blog.article(tags: 'manero').should == article_with_custom_metatags
+      blog.articles(tags: 'manero').should == [ article_with_custom_metatags ]
 
-      blog.article(:published => false).should == article_with_custom_metatags
-      blog.articles(:published => false).should == [ article_with_custom_metatags ]
+      blog.article(published: false).should == article_with_custom_metatags
+      blog.articles(published: false).should == [ article_with_custom_metatags ]
     end
 
     it 'searches by date' do
