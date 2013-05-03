@@ -14,6 +14,7 @@ describe 'how rollin works' do
   context 'article content' do
     let (:article) { blog.articles.first }
     let (:article_with_title_metatag) { blog.articles[1] }
+    let (:article_with_custom_metatags) { blog.articles[2] }
 
     it 'exposes article information and content' do
       article.id.should == '2013_05_01_My_first_post'
@@ -23,10 +24,15 @@ describe 'how rollin works' do
       article.day.should == 1
       article.date.should == Date.new(2013, 5, 1)
       article.body.should == "<h2>This is my first post</h2>\n\n<p>And here we go!</p>\n"
+      article.metatags.should be_empty
     end
 
     it 'allows article title definition with metatag' do
       article_with_title_metatag.title.should == 'This is a super post!'
+    end
+
+    it 'exposes the list of defined tags' do
+      article_with_custom_metatags.metatags.should == { :tags => ['manero', 'massa', 'bacana'], :published => false }
     end
   end
 

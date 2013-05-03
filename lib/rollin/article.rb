@@ -12,7 +12,7 @@ class Rollin::Article
   end
 
   def title
-    metatags["title"] || @title_from_filename
+    metatags[:title] || @title_from_filename
   end
 
   def metatags
@@ -22,7 +22,7 @@ class Rollin::Article
 
       if content =~ /\A(---\s*\n.*?\n?)^(---\s*$\n?)/m
         content = $POSTMATCH
-        return YAML.safe_load($1)
+        return YAML.safe_load($1).inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
       end
     rescue SyntaxError => e
       puts "YAML Exception reading #{File.join(@source_file)}: #{e.message}"
