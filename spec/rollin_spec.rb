@@ -59,6 +59,11 @@ describe 'how rollin works' do
       blog.articles(year: 2013, month: 5).should include(first_article, second_article)
       blog.articles(year: 2013, month: 5, day: 1).should include(first_article)
     end
+
+    it 'narrows search by date when searching for metatags' do
+      blog.articles(year: 2013, :tags => 'manero').should { article_with_custom_metatags }
+      blog.articles(year: 2014, :tags => 'manero').should be_empty
+    end
   end
 
   context 'listing articles' do
