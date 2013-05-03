@@ -31,8 +31,22 @@ describe 'how rollin works' do
       article_with_title_metatag.title.should == 'This is a super post!'
     end
 
-    it 'exposes the list of defined tags' do
+    it 'exposes the list of defined metatags' do
       article_with_custom_metatags.metatags.should == { :tags => ['manero', 'massa', 'bacana'], :published => false }
+    end
+  end
+
+  context 'searching for articles' do
+    let (:first_article) { blog.articles.first }
+    let (:article_with_custom_metatags) { blog.articles[2] }
+
+    it 'searches by article id' do
+      blog.find('2013_05_01_My_first_post').should == first_article
+    end
+
+    it 'searches by metatags' do
+      blog.find(:tags => 'manero').should == [ article_with_custom_metatags ]
+      blog.find(:published => false).should == [ article_with_custom_metatags ]
     end
   end
 

@@ -15,6 +15,14 @@ class Rollin::Article
     metatags[:title] || @title_from_filename
   end
 
+  def matches?(search)
+    return true if @id == search
+    search.each do |key, value|
+      return true if metatags[key] != nil && (metatags[key] == value || metatags[key].include?(value))
+    end
+    return false
+  end
+
   def metatags
     # Stolen from Jekyll
     begin

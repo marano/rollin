@@ -3,8 +3,12 @@ class Rollin::Blog
     @articles_folder = options[:articles_folder] || 'articles'
   end
 
-  def find_article_by_id(article_id)
-    articles.find { |article| article.id == article_id }
+  def find(search)
+    if search.is_a? Hash
+      articles.select { |article| article.matches?(search) }
+    elsif search.is_a? String
+      articles.find { |article| article.id == search }
+    end
   end
 
   def articles
