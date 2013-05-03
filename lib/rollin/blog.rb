@@ -15,12 +15,6 @@ class Rollin::Blog
     end
   end
 
-  def articles_by_publication(year, month=nil, day=nil)
-    articles.select do |article|
-      article.year == year && (month.nil? || article.month == month) && (day.nil? || day == article.day)
-    end
-  end
-
   def annual_archive
     monthly_archive.map { |month_archive| month_archive.year }.uniq.map do |year|
       Rollin::YearArchive.new(year, monthly_archive.select { |aMonth| aMonth.year == year })

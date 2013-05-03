@@ -55,9 +55,9 @@ describe 'how rollin works' do
     end
 
     it 'searches by date' do
-      blog.articles_by_publication(2013).should include(first_article, second_article, third_article)
-      blog.articles_by_publication(2013, 5).should include(first_article, second_article)
-      blog.articles_by_publication(2013, 5, 1).should include(first_article)
+      blog.articles(year: 2013).should include(first_article, second_article, third_article)
+      blog.articles(year: 2013, month: 5).should include(first_article, second_article)
+      blog.articles(year: 2013, month: 5, day: 1).should include(first_article)
     end
   end
 

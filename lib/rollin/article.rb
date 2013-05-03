@@ -16,11 +16,28 @@ class Rollin::Article
   end
 
   def matches?(search)
+    search = search.clone
+
     return true if @id == search
-    search.each do |key, value|
-      return true if metatags[key] != nil && (metatags[key] == value || metatags[key].include?(value))
+
+    if search.has_key?(:year)
+      return false if search.delete(:year) != @year
+      if search.has_key?(:month)
+        return false if search.delete(:month) != @month
+        if search.has_key?(:day)
+          return false if search.delete(:day) != @day
+        end
+      end
     end
-    return false
+
+    if search.keys.empty?
+      return true
+    else
+      search.each do |key, value|
+        return true if metatags[key] != nil && (metatags[key] == value || metatags[key].include?(value))
+      end
+      return false
+    end
   end
 
   def metatags
