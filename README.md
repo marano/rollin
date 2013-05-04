@@ -110,6 +110,10 @@ It is YAML snippet and follows a similar format to Jekyll's [yaml front matter](
 
 You can find a more detailed documentation at the [rollin_spec.rb](https://github.com/marano/rollin/blob/master/spec/rollin_spec.rb) file.
 
+### Concerns
+
+Since it is meant to be used in a blogging domain it is not optimized with caching. You should implement cache in the infrastructure layer, what shouldn't be hard in a mostly static environment.
+
 ## Build status
 
 [![Build Status](https://travis-ci.org/marano/rollin.png)](https://travis-ci.org/marano/rollin)
