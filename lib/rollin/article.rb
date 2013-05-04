@@ -12,13 +12,14 @@ class Rollin::Article
   end
 
   def title
-    metatags[:title] || @title_from_filename
+    metatags['title'] || @title_from_filename
   end
 
   def matches?(search)
-    search = search.clone
-
     return true if @id == search
+    return false if @searh.is_a? String
+
+    search = search.clone
 
     if search.has_key?(:year)
       return false if search.delete(:year) != @year
@@ -29,6 +30,8 @@ class Rollin::Article
         end
       end
     end
+
+    search = search.inject({}) { |memo, (k,v)| memo[k.to_s] = v; memo }
 
     if search.keys.empty?
       return true
@@ -47,7 +50,7 @@ class Rollin::Article
 
       if content =~ /\A(---\s*\n.*?\n?)^(---\s*$\n?)/m
         content = $POSTMATCH
-        return YAML.safe_load($1).inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
+        return YAML.safe_load($1)
       end
     rescue SyntaxError => e
       puts "YAML Exception reading #{File.join(@source_file)}: #{e.message}"

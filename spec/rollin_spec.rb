@@ -32,7 +32,7 @@ describe 'how rollin works' do
     end
 
     it 'exposes the list of defined metatags' do
-      article_with_custom_metatags.metatags.should == { tags: ['manero', 'massa', 'bacana'], published: false }
+      article_with_custom_metatags.metatags.should == { 'tags' => ['manero', 'massa', 'bacana'], 'published' => false }
     end
   end
 
@@ -47,11 +47,17 @@ describe 'how rollin works' do
     end
 
     it 'searches by metatags' do
-      blog.article(tags: 'manero').should == article_with_custom_metatags
-      blog.articles(tags: 'manero').should == [ article_with_custom_metatags ]
+      blog.article(:tags => 'manero').should == article_with_custom_metatags
+      blog.article('tags' => 'manero').should == article_with_custom_metatags
 
-      blog.article(published: false).should == article_with_custom_metatags
-      blog.articles(published: false).should == [ article_with_custom_metatags ]
+      blog.articles(:tags => 'manero').should == [ article_with_custom_metatags ]
+      blog.articles('tags' => 'manero').should == [ article_with_custom_metatags ]
+
+      blog.article(:published => false).should == article_with_custom_metatags
+      blog.article('published' => false).should == article_with_custom_metatags
+
+      blog.articles(:published => false).should == [ article_with_custom_metatags ]
+      blog.articles('published' => false).should == [ article_with_custom_metatags ]
     end
 
     it 'searches by date' do
@@ -63,6 +69,35 @@ describe 'how rollin works' do
     it 'narrows search by date when searching for metatags' do
       blog.articles(year: 2013, :tags => 'manero').should { article_with_custom_metatags }
       blog.articles(year: 2014, :tags => 'manero').should be_empty
+    end
+  end
+
+  context 'inquiring metatags' do
+    let (:first_article) { blog.articles[0] }
+    let (:second_article) { blog.articles[1] }
+    let (:third_article) { blog.articles[2] }
+
+    it 'shows a list of existent metatags' do
+      blog.should have(3).metatags
+
+      blog.metatags[0].label.should == 'title'
+      blog.metatags[0].should have(1).values
+      blog.metatags[0].values[0].content.should == 'This is a super post!'
+      blog.metatags[0].values[0].articles.should == [ second_article ]
+
+      blog.metatags[1].label.should == 'tags'
+      blog.metatags[1].should have(3).values
+      blog.metatags[1].values[0].content.should == 'manero'
+      blog.metatags[1].values[0].articles.should == [ third_article ]
+      blog.metatags[1].values[1].content.should == 'massa'
+      blog.metatags[1].values[1].articles.should == [ third_article ]
+      blog.metatags[1].values[2].content.should == 'bacana'
+      blog.metatags[1].values[2].articles.should == [ third_article ]
+
+      blog.metatags[2].label.should == 'published'
+      blog.metatags[2].should have(1).values
+      blog.metatags[2].values[0].content.should == false
+      blog.metatags[2].values[0].articles.should == [ third_article ]
     end
   end
 

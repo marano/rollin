@@ -15,6 +15,21 @@ class Rollin::Blog
     end
   end
 
+  def metatags
+    metatag_labels = articles.map do |article|
+      article.metatags.keys
+    end.flatten.uniq
+
+    metatag_labels.map do |metatag_label|
+      values = articles.select { |article| article.metatags.has_key?(metatag_label) }.map do |article|
+        article.metatags[metatag_label]
+      end.flatten.uniq.map do |metatag_content|
+        Rollin::MetatagValue.new(metatag_content, articles(metatag_label => metatag_content))
+      end
+      Rollin::MetatagKey.new(metatag_label, values)
+    end
+  end
+
   def annual_archive
     monthly_archive.map { |month_archive| month_archive.year }.uniq.map do |year|
       Rollin::YearArchive.new(year, monthly_archive.select { |aMonth| aMonth.year == year })
