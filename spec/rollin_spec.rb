@@ -64,9 +64,9 @@ describe 'how rollin works' do
     end
 
     it 'searches by date' do
-      blog.articles(year: 2013).should include(first_article, second_article, third_article)
-      blog.articles(year: 2013, month: 5).should include(first_article, second_article)
-      blog.articles(year: 2013, month: 5, day: 1).should include(first_article)
+      blog.articles(year: 2013).should == [ first_article, second_article, third_article ]
+      blog.articles(year: 2013, month: 5).should == [first_article, second_article ]
+      blog.articles(year: 2013, month: 5, day: 1).should  == [ first_article ]
     end
 
     it 'narrows search by date when searching for metatags' do
@@ -122,44 +122,36 @@ describe 'how rollin works' do
 
       blog.monthly_archive[0].year.should == 2013
       blog.monthly_archive[0].month.should == 5
-      blog.monthly_archive[0].should have(2).articles
-      blog.monthly_archive[0].articles.should include(first_article, second_article)
+      blog.monthly_archive[0].articles.should == [ first_article, second_article ]
 
       blog.monthly_archive[1].year.should == 2013
       blog.monthly_archive[1].month.should == 6
-      blog.monthly_archive[1].should have(1).articles
-      blog.monthly_archive[1].articles.should include(third_article)
+      blog.monthly_archive[1].articles.should == [ third_article ]
 
       blog.monthly_archive[2].year.should == 2014
       blog.monthly_archive[2].month.should == 1
-      blog.monthly_archive[2].should have(1).articles
-      blog.monthly_archive[2].articles.should include(fourth_article)
+      blog.monthly_archive[2].articles.should == [ fourth_article ]
     end
 
     it 'provides annual archive' do
       blog.should have(2).annual_archive
 
       blog.annual_archive[0].year.should == 2013
+      blog.annual_archive[0].articles.should == [ first_article, second_article, third_article ]
       blog.annual_archive[0].should have(2).monthly_archive
       blog.annual_archive[0].monthly_archive[0].year.should == 2013
       blog.annual_archive[0].monthly_archive[0].month.should == 5
-      blog.annual_archive[0].monthly_archive[0].should have(2).articles
-      blog.annual_archive[0].monthly_archive[0].articles.should include(first_article, second_article)
+      blog.annual_archive[0].monthly_archive[0].articles.should == [ first_article, second_article ]
       blog.annual_archive[0].monthly_archive[1].year.should == 2013
       blog.annual_archive[0].monthly_archive[1].month.should == 6
-      blog.annual_archive[0].monthly_archive[1].should have(1).articles
-      blog.annual_archive[0].monthly_archive[1].articles.should include(third_article)
-      blog.annual_archive[0].should have(3).articles
-      blog.annual_archive[0].articles.should include(first_article, second_article, third_article)
+      blog.annual_archive[0].monthly_archive[1].articles.should == [ third_article ]
 
       blog.annual_archive[1].year.should == 2014
+      blog.annual_archive[1].articles.should == [ fourth_article ]
       blog.annual_archive[1].should have(1).monthly_archive
       blog.annual_archive[1].monthly_archive[0].year.should == 2014
       blog.annual_archive[1].monthly_archive[0].month.should == 1
-      blog.annual_archive[1].monthly_archive[0].should have(1).articles
-      blog.annual_archive[1].monthly_archive[0].articles.should include(fourth_article)
-      blog.annual_archive[1].should have(1).articles
-      blog.annual_archive[1].articles.should include(fourth_article)
+      blog.annual_archive[1].monthly_archive[0].articles.should == [ fourth_article ]
     end
   end
 end
