@@ -11,10 +11,17 @@ describe 'how rollin works' do
 
   subject (:blog) { Rollin::Blog.new(articles_folder: 'spec/fixtures') }
 
+  let (:first_article) { blog.articles.first }
+  let (:second_article) { blog.articles[1] }
+  let (:third_article) { blog.articles[2] }
+  let (:fourth_article) { blog.articles[3] }
+
+  let (:article_with_title_metatag) { blog.articles[1] }
+  let (:article_with_tag_metatag) { blog.articles[2] }
+  let (:article_with_published_metatag) { blog.articles[3] }
+
   context 'article content' do
     let (:article) { blog.articles.first }
-    let (:article_with_title_metatag) { blog.articles[1] }
-    let (:article_with_custom_metatags) { blog.articles[2] }
 
     it 'exposes article information and content' do
       article.id.should == '2013_05_01_My_first_post'
@@ -32,32 +39,28 @@ describe 'how rollin works' do
     end
 
     it 'exposes the list of defined metatags' do
-      article_with_custom_metatags.metatags.should == { 'tags' => ['manero', 'massa', 'bacana'], 'published' => false }
+      article_with_tag_metatag.metatags.should == { 'tags' => ['manero', 'massa', 'bacana'] }
+      article_with_published_metatag.metatags.should == { 'published' => false }
     end
   end
 
   context 'searching for articles' do
-    let (:first_article) { blog.articles.first }
-    let (:second_article) { blog.articles[1] }
-    let (:third_article) { blog.articles[2] }
-    let (:article_with_custom_metatags) { blog.articles[2] }
-
     it 'searches by article id' do
       blog.article('2013_05_01_My_first_post').should == first_article
     end
 
     it 'searches by metatags' do
-      blog.article(:tags => 'manero').should == article_with_custom_metatags
-      blog.article('tags' => 'manero').should == article_with_custom_metatags
+      blog.article(:tags => 'manero').should == article_with_tag_metatag
+      blog.article('tags' => 'manero').should == article_with_tag_metatag
 
-      blog.articles(:tags => 'manero').should == [ article_with_custom_metatags ]
-      blog.articles('tags' => 'manero').should == [ article_with_custom_metatags ]
+      blog.articles(:tags => 'manero').should == [ article_with_tag_metatag ]
+      blog.articles('tags' => 'manero').should == [ article_with_tag_metatag ]
 
-      blog.article(:published => false).should == article_with_custom_metatags
-      blog.article('published' => false).should == article_with_custom_metatags
+      blog.article(:published => false).should == article_with_published_metatag
+      blog.article('published' => false).should == article_with_published_metatag
 
-      blog.articles(:published => false).should == [ article_with_custom_metatags ]
-      blog.articles('published' => false).should == [ article_with_custom_metatags ]
+      blog.articles(:published => false).should == [ article_with_published_metatag ]
+      blog.articles('published' => false).should == [ article_with_published_metatag ]
     end
 
     it 'searches by date' do
@@ -73,31 +76,27 @@ describe 'how rollin works' do
   end
 
   context 'inquiring metatags' do
-    let (:first_article) { blog.articles[0] }
-    let (:second_article) { blog.articles[1] }
-    let (:third_article) { blog.articles[2] }
-
     it 'shows a list of existent metatags' do
       blog.should have(3).metatags
 
       blog.metatags[0].label.should == 'title'
       blog.metatags[0].should have(1).values
       blog.metatags[0].values[0].content.should == 'This is a super post!'
-      blog.metatags[0].values[0].articles.should == [ second_article ]
+      blog.metatags[0].values[0].articles.should == [ article_with_title_metatag ]
 
       blog.metatags[1].label.should == 'tags'
       blog.metatags[1].should have(3).values
       blog.metatags[1].values[0].content.should == 'manero'
-      blog.metatags[1].values[0].articles.should == [ third_article ]
+      blog.metatags[1].values[0].articles.should == [ article_with_tag_metatag ]
       blog.metatags[1].values[1].content.should == 'massa'
-      blog.metatags[1].values[1].articles.should == [ third_article ]
+      blog.metatags[1].values[1].articles.should == [ article_with_tag_metatag ]
       blog.metatags[1].values[2].content.should == 'bacana'
-      blog.metatags[1].values[2].articles.should == [ third_article ]
+      blog.metatags[1].values[2].articles.should == [ article_with_tag_metatag ]
 
       blog.metatags[2].label.should == 'published'
       blog.metatags[2].should have(1).values
       blog.metatags[2].values[0].content.should == false
-      blog.metatags[2].values[0].articles.should == [ third_article ]
+      blog.metatags[2].values[0].articles.should == [ article_with_published_metatag ]
     end
   end
 
@@ -115,7 +114,9 @@ describe 'how rollin works' do
       blog.articles[2].should == third_article
       blog.articles[3].should == fourth_article
     end
+  end
 
+  context 'archive' do
     it 'provides monthly archive' do
       blog.monthly_archive.should have(3).articles
 
