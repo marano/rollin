@@ -25,18 +25,72 @@ First you will need to have the following structure in your filesystem.
     
     blog = Rollin::Blog.new({articles_folder: "posts"}) # Defaults to "articles"
     
-    first_post = blog.articles.first
+    article = blog.articles.first
 
-    first_post.id     # => "2013_05_01_My_first_post"
-    first_post.title  # => "My first post"
-    first_post.body   # => "<h3>My first post!</h3>\n<p>blah blah blah</p>"
+    article.id        # => "2013_05_01_My_first_post"
+    article.title     # => "My first post"
+    article.body      # => "<h3>My first post!</h3>\n<p>blah blah blah</p>"
 
-    first_post.date   # => #<Date: 2013-05-01 ((2456414j,0s,0n),+0s,2299161j)>
-    first_post.year   # => 2013
-    first_post.month  # => 05
-    first_post.day    # => 01
+    article.date      # => #<Date: 2013-05-01 ((2456414j,0s,0n),+0s,2299161j)>
+    article.year      # => 2013
+    article.month     # => 05
+    article.day       # => 01
 
-### Monthly archive
+### Metatags
+
+You may define articles metatags at the begging of your article with the format:
+
+    ---
+    author: Zé
+    title: My new awesome blog!
+    tags: development, fun
+    ---
+
+This is how you access the tag information.
+
+    article.metatags  # => { 'title' => 'My new awesome blog!',
+                             'author' => 'Zé',
+                             'tags' => [ 'development', 'fun' ] }
+
+
+It is YAML snippet and follows a similar format to Jekyll's [yaml front matter](https://github.com/mojombo/jekyll/wiki/yaml-front-matter). Except that our special variables are different:
+
+| Metatag | Description |
+|:------- |:----------- |
+| title   | The article title. It overrides the on extracted from the file name. |
+
+### Inquiring metatags
+
+    blog.metatags  # => A list of metatag objects
+
+    author_metatag = blog.metatags.first
+
+    author_metatag.label           # => "tags"
+    author_metatag.values          # => A list of metatag value objects
+
+    author_metatag_value = metatag.values.fist
+    author_metatag_value.content   # => "Zé"
+    author_metatag_value.articles  # => A list of articles containing that metatag value
+
+### Finding a articles
+
+#### By article id
+
+    blog.article('2013_05_01_My_first_post')  # => #Rollin::Article(:title => "My first post" ...)
+
+#### By tag
+
+    blog.articles(:tags => "development")  # => A list of articles tagged with development
+
+#### By date
+
+    blog.articles(:year => 2013)                          # => A list of articles for that year
+    blog.articles(:year => 2013, :month => 5)             # => A list of articles for that month
+    blog.articles(:year => 2013, :month => 5, :day => 1)  # => A list of articles for that day
+
+### Archive
+
+#### Monthly
 
     may_archive = blog.monthly_archive.first
 
@@ -44,7 +98,7 @@ First you will need to have the following structure in your filesystem.
     may_archive.month     # => 5
     may_archive.articles  # => [ Rollin::Article(:title => "My first post" ...) ]
 
-### Annual archive
+#### Annual
 
     twenty_thirteen_archive = blog.annual_archive.first
 
@@ -52,9 +106,9 @@ First you will need to have the following structure in your filesystem.
     twenty_thirteen_archive.articles             # => [ Rollin::Article(:title => "My first post" ...) ]
     twenty_thirteen_archive.monthly_archive      # => [ Rollin::MonthArchive(:year => 2013, :month => 5 ...) ]
 
-### Finding an article
+### More datailed documentation
 
-    blog.find_article_by_id('2013_05_01_My_first_post')  # => #Rollin::Article(:title => "My first post" ...)
+You can find a more detailed documentation at the [rollin_spec.rb](https://github.com/marano/rollin/blob/master/spec/rollin_spec.rb) file.
 
 ## Build status
 
