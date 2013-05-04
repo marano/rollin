@@ -38,7 +38,7 @@ First you will need to have the following structure in your filesystem.
 
 ### Metatags
 
-You may define articles metatags at the begging of your article with the format:
+You may define articles metatags at the beginning of your article with the format:
 
     ---
     author: Zé
@@ -78,7 +78,7 @@ It is YAML snippet and follows a similar format to Jekyll's [yaml front matter](
 
     blog.article('2013_05_01_My_first_post')  # => #Rollin::Article(:title => "My first post" ...)
 
-#### By tag
+#### By metatag
 
     blog.articles(:tags => "development")  # => A list of articles tagged with development
 
