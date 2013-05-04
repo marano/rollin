@@ -16,8 +16,9 @@ describe 'how rollin works' do
   let (:third_article) { blog.articles[2] }
   let (:fourth_article) { blog.articles[3] }
 
+  let (:article_with_single_tag_metatag) { blog.articles[0] }
   let (:article_with_title_metatag) { blog.articles[1] }
-  let (:article_with_tag_metatag) { blog.articles[2] }
+  let (:article_with_multiple_tag_metatag) { blog.articles[2] }
   let (:article_with_published_metatag) { blog.articles[3] }
 
   context 'article content' do
@@ -31,7 +32,7 @@ describe 'how rollin works' do
       article.day.should == 1
       article.date.should == Date.new(2013, 5, 1)
       article.body.should == "<h2>This is my first post</h2>\n\n<p>And here we go!</p>\n"
-      article.metatags.should be_empty
+      article.metatags.should == { 'tags' => [ 'manero' ] }
     end
 
     it 'allows article title definition with metatag' do
@@ -39,7 +40,7 @@ describe 'how rollin works' do
     end
 
     it 'exposes the list of defined metatags' do
-      article_with_tag_metatag.metatags.should == { 'tags' => ['manero', 'massa', 'bacana'] }
+      article_with_multiple_tag_metatag.metatags.should == { 'tags' => ['manero', 'massa', 'bacana'] }
       article_with_published_metatag.metatags.should == { 'published' => false }
     end
   end
@@ -50,11 +51,11 @@ describe 'how rollin works' do
     end
 
     it 'searches by metatags' do
-      blog.article(:tags => 'manero').should == article_with_tag_metatag
-      blog.article('tags' => 'manero').should == article_with_tag_metatag
+      blog.article(:tags => 'manero').should == article_with_single_tag_metatag
+      blog.article('tags' => 'manero').should == article_with_single_tag_metatag
 
-      blog.articles(:tags => 'manero').should == [ article_with_tag_metatag ]
-      blog.articles('tags' => 'manero').should == [ article_with_tag_metatag ]
+      blog.articles(:tags => 'manero').should == [ article_with_single_tag_metatag, article_with_multiple_tag_metatag ]
+      blog.articles('tags' => 'manero').should == [ article_with_single_tag_metatag, article_with_multiple_tag_metatag ]
 
       blog.article(:published => false).should == article_with_published_metatag
       blog.article('published' => false).should == article_with_published_metatag
@@ -79,19 +80,19 @@ describe 'how rollin works' do
     it 'shows a list of existent metatags' do
       blog.should have(3).metatags
 
-      blog.metatags[0].label.should == 'title'
-      blog.metatags[0].should have(1).values
-      blog.metatags[0].values[0].content.should == 'This is a super post!'
-      blog.metatags[0].values[0].articles.should == [ article_with_title_metatag ]
+      blog.metatags[0].label.should == 'tags'
+      blog.metatags[0].should have(3).values
+      blog.metatags[0].values[0].content.should == 'manero'
+      blog.metatags[0].values[0].articles.should == [ article_with_single_tag_metatag, article_with_multiple_tag_metatag ]
+      blog.metatags[0].values[1].content.should == 'massa'
+      blog.metatags[0].values[1].articles.should == [ article_with_multiple_tag_metatag ]
+      blog.metatags[0].values[2].content.should == 'bacana'
+      blog.metatags[0].values[2].articles.should == [ article_with_multiple_tag_metatag ]
 
-      blog.metatags[1].label.should == 'tags'
-      blog.metatags[1].should have(3).values
-      blog.metatags[1].values[0].content.should == 'manero'
-      blog.metatags[1].values[0].articles.should == [ article_with_tag_metatag ]
-      blog.metatags[1].values[1].content.should == 'massa'
-      blog.metatags[1].values[1].articles.should == [ article_with_tag_metatag ]
-      blog.metatags[1].values[2].content.should == 'bacana'
-      blog.metatags[1].values[2].articles.should == [ article_with_tag_metatag ]
+      blog.metatags[1].label.should == 'title'
+      blog.metatags[1].should have(1).values
+      blog.metatags[1].values[0].content.should == 'This is a super post!'
+      blog.metatags[1].values[0].articles.should == [ article_with_title_metatag ]
 
       blog.metatags[2].label.should == 'published'
       blog.metatags[2].should have(1).values

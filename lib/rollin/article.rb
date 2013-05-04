@@ -44,20 +44,15 @@ class Rollin::Article
   end
 
   def metatags
-    # Stolen from Jekyll
+    file = read_from_file
+    return {} unless file.has_front_matter?
     begin
-      content = File.read(@source_file)
-
-      if content =~ /\A(---\s*\n.*?\n?)^(---\s*$\n?)/m
-        content = $POSTMATCH
-        return YAML.safe_load($1)
-      end
+      return YAML.safe_load(file.yaml_front_matter)
     rescue SyntaxError => e
       puts "YAML Exception reading #{File.join(@source_file)}: #{e.message}"
     rescue Exception => e
       puts "Error reading file #{File.join(@source_file)}: #{e.message}"
     end
-
     return {}
   end
 
@@ -70,6 +65,35 @@ class Rollin::Article
                             autolink: true,
                             space_after_headers: true,
                             hard_wrap: true)
-    redcarpet.render(File.read(@source_file))
+    redcarpet.render(read_from_file.content)
+  end
+
+  private
+
+  def read_from_file
+    raw = File.read(@source_file)
+
+    # Stolen from Jekyll
+    if raw =~ /\A(---\s*\n.*?\n?)^(---\s*$\n?)/m
+      content = $POSTMATCH
+      yaml_front_matter = $1
+      content = raw[yaml_front_matter.size + 3, raw.size - 1]
+      FileContent.new(yaml_front_matter, content)
+    else
+      FileContent.new(nil, raw)
+    end
+  end
+end
+
+class FileContent
+  attr_reader :yaml_front_matter, :content
+
+  def initialize(yaml_front_matter, content)
+    @yaml_front_matter = yaml_front_matter
+    @content = content
+  end
+
+  def has_front_matter?
+    !yaml_front_matter.nil?
   end
 end
