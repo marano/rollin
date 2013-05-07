@@ -48,6 +48,7 @@ describe 'how rollin works' do
   context 'searching for articles' do
     it 'searches by article id' do
       blog.article('2013_05_01_My_first_post').should == first_article
+      blog.article('this_article_does_not_exist').should be_nil
     end
 
     it 'searches by metatags' do

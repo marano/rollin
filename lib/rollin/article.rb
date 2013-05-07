@@ -17,7 +17,7 @@ class Rollin::Article
 
   def matches?(search)
     return true if @id == search
-    return false if @searh.is_a? String
+    return false if search.is_a? String
 
     search = search.clone
 
