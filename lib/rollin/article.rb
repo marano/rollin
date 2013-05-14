@@ -61,12 +61,13 @@ class Rollin::Article
   end
 
   def body
-    redcarpet = Redcarpet::Markdown.new(Redcarpet::Render::HTML,
-                            autolink: true,
-                            space_after_headers: true,
-                            hard_wrap: true,
-                            fenced_code_blocks: true,
-                            disable_indented_code_blocks: true)
+    html_renderer_options = { hard_wrap: false }
+    parser_options = { autolink: true,
+                       space_after_headers: true,
+                       fenced_code_blocks: true,
+                       disable_indented_code_blocks: true }
+    render = Redcarpet::Render::HTML.new(html_renderer_options)
+    redcarpet = Redcarpet::Markdown.new(render, parser_options)
     redcarpet.render(read_from_file.content)
   end
 
