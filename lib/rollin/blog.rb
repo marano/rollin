@@ -3,25 +3,25 @@ class Rollin::Blog
     @articles_folder = options[:articles_folder] || 'articles'
   end
 
-  def article(search)
+  def article(search = {})
     read_articles.find { |article| article.matches?(search) }
   end
 
-  def articles(search=nil)
-    if search.nil?
-      read_articles
-    else
-      read_articles.select { |article| article.matches?(search) }
-    end
+  def articles(search = {})
+    read_articles.select { |article| article.matches?(search) }
+  end
+
+  def unfiltered_articles
+    read_articles
   end
 
   def metatags
-    metatag_labels = articles.map do |article|
+    metatag_labels = unfiltered_articles.map do |article|
       article.metatags.keys
     end.flatten.uniq
 
     metatag_labels.map do |metatag_label|
-      values = articles.select { |article| article.metatags.has_key?(metatag_label) }.map do |article|
+      values = unfiltered_articles.select { |article| article.metatags.has_key?(metatag_label) }.map do |article|
         article.metatags[metatag_label]
       end.flatten.uniq.map do |metatag_content|
         Rollin::MetatagValue.new(metatag_content, articles(metatag_label => metatag_content))

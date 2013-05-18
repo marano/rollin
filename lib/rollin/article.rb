@@ -11,27 +11,30 @@ class Rollin::Article
     @day = filename[8, 2].to_i
   end
 
+  def published?
+    !metatags.has_key?('published') || metatags['published'] == 'true'
+  end
+
   def title
     metatags['title'] || @title_from_filename
   end
 
   def matches?(search)
-    return true if @id == search
-    return false if search.is_a? String
+    return @id == search if search.is_a? String
 
-    search = search.clone
+    search = search.inject({}) { |hash, (k,v)| hash[k.to_s] = v; hash }
 
-    if search.has_key?(:year)
-      return false if search.delete(:year) != @year
-      if search.has_key?(:month)
-        return false if search.delete(:month) != @month
-        if search.has_key?(:day)
-          return false if search.delete(:day) != @day
+    return false unless published? || show_unpublished?(search)
+
+    if search.has_key?('year')
+      return false if search.delete('year') != @year
+      if search.has_key?('month')
+        return false if search.delete('month') != @month
+        if search.has_key?('day')
+          return false if search.delete('day') != @day
         end
       end
     end
-
-    search = search.inject({}) { |memo, (k,v)| memo[k.to_s] = v; memo }
 
     if search.keys.empty?
       return true
@@ -85,6 +88,10 @@ class Rollin::Article
     else
       FileContent.new(nil, raw)
     end
+  end
+
+  def show_unpublished?(search)
+    search.has_key?('published') && search['published'].to_s != 'true' && search['published'] != 'yes'
   end
 end
 

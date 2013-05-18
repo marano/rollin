@@ -6,6 +6,7 @@ require 'spec_helper'
 # 2013_05_02_My_second_post.mk
 # 2013_06_01_My_third_post.mk
 # 2014_01_01_My_fourth_post.mk
+# 2014_01_01_My_fifth_article.mk
 
 describe 'how rollin works' do
 
@@ -14,12 +15,12 @@ describe 'how rollin works' do
   let (:first_article) { blog.articles.first }
   let (:second_article) { blog.articles[1] }
   let (:third_article) { blog.articles[2] }
-  let (:fourth_article) { blog.articles[3] }
+  let (:fifth_article) { blog.articles[3] }
 
   let (:article_with_single_tag_metatag) { blog.articles[0] }
   let (:article_with_title_metatag) { blog.articles[1] }
   let (:article_with_multiple_tag_metatag) { blog.articles[2] }
-  let (:article_with_published_metatag) { blog.articles[3] }
+  let (:unpublished_article) { blog.article(:published => false) }
 
   context 'article content' do
     let (:article) { blog.articles.first }
@@ -31,6 +32,7 @@ describe 'how rollin works' do
       article.month.should == 5
       article.day.should == 1
       article.date.should == Date.new(2013, 5, 1)
+      article.published?.should be_true
       article.body.should == "<h2>This is my first post</h2>\n\n<p>And here we go!</p>\n"
       article.metatags.should == { 'tags' => [ 'manero' ] }
     end
@@ -41,7 +43,7 @@ describe 'how rollin works' do
 
     it 'exposes the list of defined metatags' do
       article_with_multiple_tag_metatag.metatags.should == { 'tags' => ['manero', 'massa', 'bacana'] }
-      article_with_published_metatag.metatags.should == { 'published' => false }
+      unpublished_article.metatags.should == { 'published' => false }
     end
   end
 
@@ -58,11 +60,11 @@ describe 'how rollin works' do
       blog.articles(:tags => 'manero').should == [ article_with_single_tag_metatag, article_with_multiple_tag_metatag ]
       blog.articles('tags' => 'manero').should == [ article_with_single_tag_metatag, article_with_multiple_tag_metatag ]
 
-      blog.article(:published => false).should == article_with_published_metatag
-      blog.article('published' => false).should == article_with_published_metatag
+      blog.article(:published => false).should == unpublished_article
+      blog.article('published' => false).should == unpublished_article
 
-      blog.articles(:published => false).should == [ article_with_published_metatag ]
-      blog.articles('published' => false).should == [ article_with_published_metatag ]
+      blog.articles(:published => false).should == [ unpublished_article ]
+      blog.articles('published' => false).should == [ unpublished_article ]
     end
 
     it 'searches by date' do
@@ -98,7 +100,7 @@ describe 'how rollin works' do
       blog.metatags[2].label.should == 'published'
       blog.metatags[2].should have(1).values
       blog.metatags[2].values[0].content.should == false
-      blog.metatags[2].values[0].articles.should == [ article_with_published_metatag ]
+      blog.metatags[2].values[0].articles.should == [ unpublished_article ]
     end
   end
 
@@ -106,7 +108,7 @@ describe 'how rollin works' do
     let (:first_article) { TestArticle.new(id: '2013_05_01_My_first_post', title: 'My first post', date: Date.new(2013, 5, 1)) }
     let (:second_article) { TestArticle.new(id: '2013_05_02_My_second_post', title: 'This is a super post!', date: Date.new(2013, 5, 2)) }
     let (:third_article) { TestArticle.new(id: '2013_06_01_My_third_post', title: 'My third post', date: Date.new(2013, 6, 1)) }
-    let (:fourth_article) { TestArticle.new(id: '2014_01_01_My_fourth_post', title: 'My fourth post', date: Date.new(2014, 1, 1)) }
+    let (:fifth_article) { TestArticle.new(id: '2014_01_01_My_fifth_post', title: 'My fifth post', date: Date.new(2014, 1, 1)) }
 
     it 'lists all articles' do
       blog.should have(4).articles
@@ -114,7 +116,7 @@ describe 'how rollin works' do
       blog.articles[0].should == first_article
       blog.articles[1].should == second_article
       blog.articles[2].should == third_article
-      blog.articles[3].should == fourth_article
+      blog.articles[3].should == fifth_article
     end
   end
 
@@ -132,7 +134,7 @@ describe 'how rollin works' do
 
       blog.monthly_archive[2].year.should == 2014
       blog.monthly_archive[2].month.should == 1
-      blog.monthly_archive[2].articles.should == [ fourth_article ]
+      blog.monthly_archive[2].articles.should == [ fifth_article ]
     end
 
     it 'provides annual archive' do
@@ -149,11 +151,11 @@ describe 'how rollin works' do
       blog.annual_archive[0].monthly_archive[1].articles.should == [ third_article ]
 
       blog.annual_archive[1].year.should == 2014
-      blog.annual_archive[1].articles.should == [ fourth_article ]
+      blog.annual_archive[1].articles.should == [ fifth_article ]
       blog.annual_archive[1].should have(1).monthly_archive
       blog.annual_archive[1].monthly_archive[0].year.should == 2014
       blog.annual_archive[1].monthly_archive[0].month.should == 1
-      blog.annual_archive[1].monthly_archive[0].articles.should == [ fourth_article ]
+      blog.annual_archive[1].monthly_archive[0].articles.should == [ fifth_article ]
     end
   end
 end
