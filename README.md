@@ -55,9 +55,10 @@ This is how you access the tag information.
 
 It is YAML snippet and follows a similar format to Jekyll's [yaml front matter](https://github.com/mojombo/jekyll/wiki/yaml-front-matter). Except that our special variables are different:
 
-| Metatag | Description |
-|:------- |:----------- |
-| title   | The article title. It overrides the on extracted from the file name. |
+| Metatag     | Description |
+|:----------- |:----------- |
+| title       | The article title. It overrides the extracted title from the file name.                       |
+| published   | If the article is published. Defaults to "yes". Set it to "no" or "false" to hide an article. |
 
 ### Inquiring metatags
 
