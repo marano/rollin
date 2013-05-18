@@ -4,15 +4,15 @@ class Rollin::Blog
   end
 
   def article(search = {})
-    read_articles.find { |article| article.matches?(search) }
+    unfiltered_articles.find { |article| article.matches?(search) }
   end
 
   def articles(search = {})
-    read_articles.select { |article| article.matches?(search) }
+    unfiltered_articles.select { |article| article.matches?(search) }
   end
 
   def unfiltered_articles
-    read_articles
+    read_articles.reverse
   end
 
   def metatags

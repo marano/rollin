@@ -12,18 +12,18 @@ describe 'how rollin works' do
 
   subject (:blog) { Rollin::Blog.new(articles_folder: 'spec/fixtures') }
 
-  let (:first_article) { blog.articles.first }
-  let (:second_article) { blog.articles[1] }
-  let (:third_article) { blog.articles[2] }
-  let (:fifth_article) { blog.articles[3] }
+  let (:first_article) { blog.articles[3] }
+  let (:second_article) { blog.articles[2] }
+  let (:third_article) { blog.articles[1] }
+  let (:fifth_article) { blog.articles[0] }
 
-  let (:article_with_single_tag_metatag) { blog.articles[0] }
-  let (:article_with_title_metatag) { blog.articles[1] }
-  let (:article_with_multiple_tag_metatag) { blog.articles[2] }
+  let (:article_with_single_tag_metatag) { blog.articles[3] }
+  let (:article_with_title_metatag) { blog.articles[2] }
+  let (:article_with_multiple_tag_metatag) { blog.articles[1] }
   let (:unpublished_article) { blog.article(:published => false) }
 
   context 'article content' do
-    let (:article) { blog.articles.first }
+    let (:article) { blog.articles.last }
 
     it 'exposes article information and content' do
       article.id.should == '2013_05_01_My_first_post'
@@ -54,11 +54,11 @@ describe 'how rollin works' do
     end
 
     it 'searches by metatags' do
-      blog.article(:tags => 'manero').should == article_with_single_tag_metatag
-      blog.article('tags' => 'manero').should == article_with_single_tag_metatag
+      blog.article(:tags => 'manero').should == article_with_multiple_tag_metatag
+      blog.article('tags' => 'manero').should == article_with_multiple_tag_metatag
 
-      blog.articles(:tags => 'manero').should == [ article_with_single_tag_metatag, article_with_multiple_tag_metatag ]
-      blog.articles('tags' => 'manero').should == [ article_with_single_tag_metatag, article_with_multiple_tag_metatag ]
+      blog.articles(:tags => 'manero').should == [ article_with_multiple_tag_metatag, article_with_single_tag_metatag ]
+      blog.articles('tags' => 'manero').should == [ article_with_multiple_tag_metatag, article_with_single_tag_metatag ]
 
       blog.article(:published => false).should == unpublished_article
       blog.article('published' => false).should == unpublished_article
@@ -68,8 +68,8 @@ describe 'how rollin works' do
     end
 
     it 'searches by date' do
-      blog.articles(year: 2013).should == [ first_article, second_article, third_article ]
-      blog.articles(year: 2013, month: 5).should == [first_article, second_article ]
+      blog.articles(year: 2013).should == [ third_article, second_article, first_article ]
+      blog.articles(year: 2013, month: 5).should == [second_article, first_article ]
       blog.articles(year: 2013, month: 5, day: 1).should  == [ first_article ]
     end
 
@@ -83,24 +83,24 @@ describe 'how rollin works' do
     it 'shows a list of existent metatags' do
       blog.should have(3).metatags
 
-      blog.metatags[0].label.should == 'tags'
-      blog.metatags[0].should have(3).values
-      blog.metatags[0].values[0].content.should == 'manero'
-      blog.metatags[0].values[0].articles.should == [ article_with_single_tag_metatag, article_with_multiple_tag_metatag ]
-      blog.metatags[0].values[1].content.should == 'massa'
-      blog.metatags[0].values[1].articles.should == [ article_with_multiple_tag_metatag ]
-      blog.metatags[0].values[2].content.should == 'bacana'
-      blog.metatags[0].values[2].articles.should == [ article_with_multiple_tag_metatag ]
+      blog.metatags[0].label.should == 'published'
+      blog.metatags[0].should have(1).values
+      blog.metatags[0].values[0].content.should == false
+      blog.metatags[0].values[0].articles.should == [ unpublished_article ]
 
-      blog.metatags[1].label.should == 'title'
-      blog.metatags[1].should have(1).values
-      blog.metatags[1].values[0].content.should == 'This is a super post!'
-      blog.metatags[1].values[0].articles.should == [ article_with_title_metatag ]
+      blog.metatags[1].label.should == 'tags'
+      blog.metatags[1].should have(3).values
+      blog.metatags[1].values[2].content.should == 'bacana'
+      blog.metatags[1].values[2].articles.should == [ article_with_multiple_tag_metatag ]
+      blog.metatags[1].values[1].content.should == 'massa'
+      blog.metatags[1].values[1].articles.should == [ article_with_multiple_tag_metatag ]
+      blog.metatags[1].values[0].content.should == 'manero'
+      blog.metatags[1].values[0].articles.should == [ article_with_multiple_tag_metatag, article_with_single_tag_metatag ]
 
-      blog.metatags[2].label.should == 'published'
+      blog.metatags[2].label.should == 'title'
       blog.metatags[2].should have(1).values
-      blog.metatags[2].values[0].content.should == false
-      blog.metatags[2].values[0].articles.should == [ unpublished_article ]
+      blog.metatags[2].values[0].content.should == 'This is a super post!'
+      blog.metatags[2].values[0].articles.should == [ article_with_title_metatag ]
     end
   end
 
@@ -113,10 +113,10 @@ describe 'how rollin works' do
     it 'lists all articles' do
       blog.should have(4).articles
 
-      blog.articles[0].should == first_article
-      blog.articles[1].should == second_article
-      blog.articles[2].should == third_article
-      blog.articles[3].should == fifth_article
+      blog.articles[0].should == fifth_article
+      blog.articles[1].should == third_article
+      blog.articles[2].should == second_article
+      blog.articles[3].should == first_article
     end
   end
 
@@ -124,38 +124,39 @@ describe 'how rollin works' do
     it 'provides monthly archive' do
       blog.monthly_archive.should have(3).articles
 
-      blog.monthly_archive[0].year.should == 2013
-      blog.monthly_archive[0].month.should == 5
-      blog.monthly_archive[0].articles.should == [ first_article, second_article ]
+      blog.monthly_archive[0].year.should == 2014
+      blog.monthly_archive[0].month.should == 1
+      blog.monthly_archive[0].articles.should == [ fifth_article ]
 
       blog.monthly_archive[1].year.should == 2013
       blog.monthly_archive[1].month.should == 6
       blog.monthly_archive[1].articles.should == [ third_article ]
 
-      blog.monthly_archive[2].year.should == 2014
-      blog.monthly_archive[2].month.should == 1
-      blog.monthly_archive[2].articles.should == [ fifth_article ]
+      blog.monthly_archive[2].year.should == 2013
+      blog.monthly_archive[2].month.should == 5
+      blog.monthly_archive[2].articles.should == [ second_article, first_article ]
     end
 
     it 'provides annual archive' do
       blog.should have(2).annual_archive
 
-      blog.annual_archive[0].year.should == 2013
-      blog.annual_archive[0].articles.should == [ first_article, second_article, third_article ]
-      blog.annual_archive[0].should have(2).monthly_archive
-      blog.annual_archive[0].monthly_archive[0].year.should == 2013
-      blog.annual_archive[0].monthly_archive[0].month.should == 5
-      blog.annual_archive[0].monthly_archive[0].articles.should == [ first_article, second_article ]
-      blog.annual_archive[0].monthly_archive[1].year.should == 2013
-      blog.annual_archive[0].monthly_archive[1].month.should == 6
-      blog.annual_archive[0].monthly_archive[1].articles.should == [ third_article ]
+      blog.annual_archive[0].year.should == 2014
+      blog.annual_archive[0].articles.should == [ fifth_article ]
+      blog.annual_archive[0].should have(1).monthly_archive
+      blog.annual_archive[0].monthly_archive[0].year.should == 2014
+      blog.annual_archive[0].monthly_archive[0].month.should == 1
+      blog.annual_archive[0].monthly_archive[0].articles.should == [ fifth_article ]
 
-      blog.annual_archive[1].year.should == 2014
-      blog.annual_archive[1].articles.should == [ fifth_article ]
-      blog.annual_archive[1].should have(1).monthly_archive
-      blog.annual_archive[1].monthly_archive[0].year.should == 2014
-      blog.annual_archive[1].monthly_archive[0].month.should == 1
-      blog.annual_archive[1].monthly_archive[0].articles.should == [ fifth_article ]
+      blog.annual_archive[1].year.should == 2013
+      blog.annual_archive[1].articles.should == [ third_article, second_article, first_article ]
+      blog.annual_archive[1].should have(2).monthly_archive
+      blog.annual_archive[1].monthly_archive[0].year.should == 2013
+      blog.annual_archive[1].monthly_archive[0].month.should == 6
+      blog.annual_archive[1].monthly_archive[0].articles.should == [ third_article ]
+
+      blog.annual_archive[1].monthly_archive[1].year.should == 2013
+      blog.annual_archive[1].monthly_archive[1].month.should == 5
+      blog.annual_archive[1].monthly_archive[1].articles.should == [ second_article, first_article ]
     end
   end
 end
