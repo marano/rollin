@@ -117,7 +117,7 @@ Since it is meant to be used in a blogging domain it is not optimized with cachi
 
 ## Build status
 
-[![Build Status](https://travis-ci.org/marano/rollin.png)](https://travis-ci.org/marano/rollin)
+[![Build Status](https://snap-ci.com/marano/rollin/branch/master/build_image)](https://snap-ci.com/marano/rollin/branch/master)
 
 ## Contributing
 
