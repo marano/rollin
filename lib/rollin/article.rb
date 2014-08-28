@@ -1,9 +1,9 @@
 class Rollin::Article
-  attr_reader :id, :year, :month, :day
+  attr_reader :id, :year, :month, :day, :filename
 
   def initialize(source_file)
     @source_file = source_file
-    filename = File.basename(@source_file)
+    @filename = File.basename(@source_file)
     @id = filename[0, filename.length - 3]
     @title_from_filename = filename[11, filename.length - 11 - 3].gsub('_', ' ')
     @year = filename[0, 4].to_i
