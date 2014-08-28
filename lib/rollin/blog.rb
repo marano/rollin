@@ -48,7 +48,8 @@ class Rollin::Blog
   private
 
   def read_articles
-    Dir["#{@articles_folder}/**/*.mk"].sort.map do |article_source|
+    extensions = %w{markdown mdown mkdn md mkd mdwn mdtxt mdtext text}
+    Dir[*extensions.map { |ext| "#{@articles_folder}/**/*.#{ext}" }].sort.map do |article_source|
       Rollin::Article.new(article_source)
     end
   end

@@ -35,7 +35,7 @@ describe 'how rollin works' do
       article.published?.should be_true
       article.body.should == "<h2>This is my first post</h2>\n\n<p>And here we go!</p>\n"
       article.metatags.should == { 'tags' => [ 'manero' ] }
-      article.filename.should == '2013_05_01_My_first_post.mk'
+      article.filename.should == '2013_05_01_My_first_post.md'
     end
 
     it 'allows article title definition with metatag' do
