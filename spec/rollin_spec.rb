@@ -32,7 +32,7 @@ describe 'how rollin works' do
       article.month.should == 5
       article.day.should == 1
       article.date.should == Date.new(2013, 5, 1)
-      article.published?.should be_true
+      article.published?.should == true
       article.body.should == "<h2>This is my first post</h2>\n\n<p>And here we go!</p>\n"
       article.metatags.should == { 'tags' => [ 'manero' ] }
       article.filename.should == '2013_05_01_My_first_post.md'
@@ -82,15 +82,15 @@ describe 'how rollin works' do
 
   context 'inquiring metatags' do
     it 'shows a list of existent metatags' do
-      blog.should have(3).metatags
+      blog.metatags.size.should be 3
 
       blog.metatags[0].label.should == 'published'
-      blog.metatags[0].should have(1).values
+      blog.metatags[0].values.size.should be 1
       blog.metatags[0].values[0].content.should == false
       blog.metatags[0].values[0].articles.should == [ unpublished_article ]
 
       blog.metatags[1].label.should == 'tags'
-      blog.metatags[1].should have(3).values
+      blog.metatags[1].values.size.should be 3
       blog.metatags[1].values[2].content.should == 'bacana'
       blog.metatags[1].values[2].articles.should == [ article_with_multiple_tag_metatag ]
       blog.metatags[1].values[1].content.should == 'massa'
@@ -99,7 +99,7 @@ describe 'how rollin works' do
       blog.metatags[1].values[0].articles.should == [ article_with_multiple_tag_metatag, article_with_single_tag_metatag ]
 
       blog.metatags[2].label.should == 'title'
-      blog.metatags[2].should have(1).values
+      blog.metatags[2].values.size.should be 1
       blog.metatags[2].values[0].content.should == 'This is a super post!'
       blog.metatags[2].values[0].articles.should == [ article_with_title_metatag ]
     end
@@ -112,7 +112,7 @@ describe 'how rollin works' do
     let (:fifth_article) { TestArticle.new(id: '2014_01_01_My_fifth_post', title: 'My fifth post', date: Date.new(2014, 1, 1)) }
 
     it 'lists all articles' do
-      blog.should have(4).articles
+      blog.articles.size.should == 4
 
       blog.articles[0].should == fifth_article
       blog.articles[1].should == third_article
@@ -123,7 +123,7 @@ describe 'how rollin works' do
 
   context 'archive' do
     it 'provides monthly archive' do
-      blog.monthly_archive.should have(3).articles
+      blog.monthly_archive.size.should be 3
 
       blog.monthly_archive[0].year.should == 2014
       blog.monthly_archive[0].month.should == 1
@@ -139,18 +139,18 @@ describe 'how rollin works' do
     end
 
     it 'provides annual archive' do
-      blog.should have(2).annual_archive
+      blog.annual_archive.size.should be 2
 
       blog.annual_archive[0].year.should == 2014
       blog.annual_archive[0].articles.should == [ fifth_article ]
-      blog.annual_archive[0].should have(1).monthly_archive
+      blog.annual_archive[0].monthly_archive.size.should be 1
       blog.annual_archive[0].monthly_archive[0].year.should == 2014
       blog.annual_archive[0].monthly_archive[0].month.should == 1
       blog.annual_archive[0].monthly_archive[0].articles.should == [ fifth_article ]
 
       blog.annual_archive[1].year.should == 2013
       blog.annual_archive[1].articles.should == [ third_article, second_article, first_article ]
-      blog.annual_archive[1].should have(2).monthly_archive
+      blog.annual_archive[1].monthly_archive.size.should be 2
       blog.annual_archive[1].monthly_archive[0].year.should == 2013
       blog.annual_archive[1].monthly_archive[0].month.should == 6
       blog.annual_archive[1].monthly_archive[0].articles.should == [ third_article ]
