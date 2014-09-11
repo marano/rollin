@@ -19,7 +19,7 @@ Add the dependency to your Gemfile:
 First you will need to have the following structure in your filesystem.
 
     ├── posts
-        └── 2013_05_01_My_first_post.mk
+        └── 2013_05_01_My_first_post.md
 
 ### Articles
     
